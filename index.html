@@ -6,9 +6,12 @@
     <title>Zgadnij imię bejbika!</title>
     <style>
         :root {
-            --primary: #ff85a2;
-            --bg: #fdf6f8;
-            --text: #4a4a4a;
+            /* Nowa paleta niebieska */
+            --primary: #3498db; /* Główny niebieski */
+            --primary-dark: #2980b9; /* Ciemniejszy niebieski do hoverów */
+            --bg: #e3f2fd; /* Bardzo jasny niebieski tła */
+            --text: #2c3e50; /* Ciemny niebiesko-szary tekst */
+            --border: #bbdefb; /* Jasnoniebieskie obramowanie */
         }
 
         body {
@@ -24,98 +27,126 @@
 
         .container {
             background: white;
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.1);
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
+            border: 1px solid var(--border);
         }
 
-        h1 { color: var(--primary); margin-bottom: 0.5rem; }
-        p { margin-bottom: 1.5rem; font-size: 0.9rem; }
+        h1 { color: var(--primary); margin-bottom: 0.5rem; margin-top: 0; }
+        p { margin-bottom: 2rem; font-size: 1rem; opacity: 0.9; }
 
         .input-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             text-align: left;
         }
 
-        label { display: block; margin-bottom: 0.3rem; font-weight: bold; font-size: 0.85rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.9rem; color: var(--primary-dark); }
 
         input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 10px;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
             box-sizing: border-box;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            font-size: 1rem;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+
+        input::placeholder {
+            color: #b0bec5;
         }
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
+            transition: all 0.2s;
             margin-top: 1rem;
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
         }
 
-        button:active { transform: scale(0.98); }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        button:hover {
+            background-color: var(--primary-dark);
+        }
 
-        #message { margin-top: 1rem; font-weight: bold; display: none; }
+        button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 3px rgba(52, 152, 219, 0.2);
+        }
+
+        button:disabled {
+            background-color: #b0bec5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #message { 
+            margin-top: 1.5rem; 
+            font-weight: bold; 
+            display: none; 
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
 
 <div class="container" id="app">
-    <h1>🍼 Zgadnij imię bejbika!</h1>
-    <p>Jak myślisz, jakie imię wybraliśmy?</p>
+    <h1>💙 Zgadnij imię bejbika!</h1>
+    <p>To chłopiec! Jak myślisz, jakie imię wybraliśmy?</p>
     
     <div id="form-container">
         <div class="input-group">
-            <label for="userName">Kto zgaduje? (Twój podpis)</label>
-            <input type="text" id="userName" placeholder="np. Ciocia Grażynka" required>
+            <label for="userName">Twoje imię (Kto zgaduje?)</label>
+            <input type="text" id="userName" placeholder="np. Wujek Marek" required>
         </div>
 
         <div class="input-group">
-            <label for="guess">Twoje typowane imię</label>
-            <input type="text" id="guess" placeholder="np. Amelia lub Antoni" required>
+            <label for="guess">Typowane imię chlopca</label>
+            <input type="text" id="guess" placeholder="np. Staś lub Leon" required>
         </div>
 
-        <button id="submitBtn" onclick="sendVote()">Obstawiam! 🚀</button>
+        <button id="submitBtn" onclick="sendVote()">Wysyłam typ! 🚀</button>
     </div>
 
     <div id="message"></div>
 </div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmKJy9dV6WVRNhBtYWHDHR8iT3KApQXi0X9AVd4azUwdalP7trJ8z6Z9VEi4ICEgk_IA/exec';
+    // Tu wklej swój URL z wdrożenia Google Apps Script
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmKJy9dV6WVRNhBtYWHDHR8iT3KApQXi0X9AVd4azUwdalP7trJ8z6Z9VEi4ICEgk_IA/exec'; 
     const msgDiv = document.getElementById('message');
     const formContainer = document.getElementById('form-container');
 
-    // 1. Sprawdzanie czy już głosował
+    // 1. Sprawdzanie czy już głosował (LocalStorage)
     window.onload = () => {
-        if (localStorage.getItem('has_voted_bejbik')) {
-            showSuccess('Dzięki! Twoje typowanie jest już w bazie. 👶');
+        if (localStorage.getItem('has_voted_bejbik_boy')) {
+            showSuccess('Dzięki! Twoje typowanie jest już bezpieczne w bazie. 👶');
         }
     };
 
-    // 2. Unikalne ID urządzenia (proste)
-    let deviceId = localStorage.getItem('device_id');
+    // 2. Unikalne ID urządzenia (proste zabezpieczenie)
+    let deviceId = localStorage.getItem('device_id_boy');
     if (!deviceId) {
-        deviceId = 'dev-' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('device_id', deviceId);
+        deviceId = 'dev-b-' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('device_id_boy', deviceId);
     }
 
     async function sendVote() {
@@ -124,7 +155,7 @@
         const btn = document.getElementById('submitBtn');
 
         if (!userName || !guess) {
-            alert('Wypełnij oba pola! 😊');
+            alert('Proszę, wypełnij oba pola przed wysłaniem! 😊');
             return;
         }
 
@@ -132,24 +163,26 @@
         btn.innerText = 'Wysyłanie...';
 
         try {
-            // Apps Script przy CORS POST ma swoje humory, 
-            // więc wysyłamy jako text/plain jeśli nie używasz bibliotek typu Axios
+            // Apps Script przy CORS POST działa najlepiej z mode: 'no-cors'
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors', 
                 cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ userName, guess, deviceId })
             });
 
-            // Ponieważ no-cors nie zwraca odpowiedzi, zakładamy sukces
-            localStorage.setItem('has_voted_bejbik', 'true');
-            showSuccess('Głos wysłany! Powodzenia! 🎉');
+            // Ponieważ no-cors nie zwraca odpowiedzi, zakładamy sukces po wysłaniu
+            localStorage.setItem('has_voted_bejbik_boy', 'true');
+            showSuccess('Głos przyjęty! Teraz czekamy na rozwiązanie... 🎉');
             
         } catch (error) {
             console.error('Błąd:', error);
-            alert('Coś poszło nie tak. Spróbuj później.');
+            alert('Ups! Coś poszło nie tak z serwerami Google. Spróbuj za chwilę.');
             btn.disabled = false;
-            btn.innerText = 'Obstawiam! 🚀';
+            btn.innerText = 'Wysyłam typ! 🚀';
         }
     }
 
@@ -157,7 +190,9 @@
         formContainer.style.display = 'none';
         msgDiv.innerText = text;
         msgDiv.style.display = 'block';
-        msgDiv.style.color = '#2ecc71';
+        msgDiv.style.color = '#27ae60'; // Zielony kolor sukcesu
+        msgDiv.style.backgroundColor = '#eafaf1'; // Jasnozielone tło
+        msgDiv.style.border = '1px solid #d4efdf';
     }
 </script>
 
