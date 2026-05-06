@@ -7,12 +7,16 @@
     <style>
         :root {
             --primary: #3498db;
+            --primary-dark: #2980b9;
             --bg: #e3f2fd;
             --text: #2c3e50;
+            --border: #bbdefb;
+            --success-bg: #eafaf1;
+            --success-text: #27ae60;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
@@ -21,21 +25,30 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            position: relative;
         }
 
-        /* Selektor języka */
+        /* Przełącznik języków */
         .lang-switcher {
-            margin-bottom: 1rem;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
         }
 
         .lang-btn {
             background: white;
-            border: 1px solid var(--primary);
-            padding: 5px 10px;
-            border-radius: 5px;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 14px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.8rem;
-            margin: 0 2px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .lang-btn.active {
@@ -43,22 +56,72 @@
             color: white;
         }
 
+        /* Kontener główny */
         .container {
             background: white;
             padding: 2.5rem;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.1);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.15);
             width: 90%;
             max-width: 420px;
             text-align: center;
+            border: 1px solid var(--border);
+            box-sizing: border-box;
         }
 
-        h1 { color: var(--primary); margin-bottom: 0.5rem; }
-        .input-group { margin-bottom: 1.2rem; text-align: left; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-        input { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; box-sizing: border-box; }
-        button { width: 100%; padding: 16px; background-color: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 1rem; }
-        #message { margin-top: 1.5rem; font-weight: bold; display: none; padding: 15px; border-radius: 10px; }
+        h1 { color: var(--primary); margin-bottom: 0.5rem; margin-top: 0; font-size: 1.8rem; }
+        p { margin-bottom: 2rem; font-size: 1rem; opacity: 0.8; line-height: 1.4; }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.9rem; color: var(--primary-dark); }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        button#submitBtn {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+        }
+
+        button#submitBtn:hover { background-color: var(--primary-dark); }
+        button#submitBtn:disabled { background-color: #b0bec5; cursor: not-allowed; }
+
+        #message { 
+            margin-top: 1.5rem; 
+            font-weight: bold; 
+            display: none; 
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -91,57 +154,58 @@
     </div>
 
 <script>
-    const SCRIPT_URL = 'TWÓJ_URL_Z_GOOGLE_APPS_SCRIPT';
+    // --- KONFIGURACJA ---
+    const SCRIPT_URL = 'TU_WKLEJ_SWOJ_URL_Z_APPS_SCRIPT'; 
+    // --------------------
 
     const translations = {
         pl: {
-            title: "💙 Zgadnij imię bejbika!",
+            title: "💙 Zgadnij imię!",
             description: "To chłopiec! Jak myślisz, jakie imię wybraliśmy?",
-            labelName: "Twoje imię (Kto zgaduje?)",
-            labelGuess: "Typowane imię chłopca",
+            labelName: "Twoje imię",
+            labelGuess: "Typowane imię",
             placeholderName: "np. Wujek Marek",
             placeholderGuess: "np. Staś lub Leon",
             button: "Wysyłam typ! 🚀",
             sending: "Wysyłanie...",
             success: "Głos przyjęty! Teraz czekamy na rozwiązanie... 🎉",
             alreadyVoted: "Dzięki! Twoje typowanie jest już w bazie. 👶",
-            error: "Ups! Coś poszło nie tak. Spróbuj za chwilę."
+            error: "Ups! Coś poszło nie tak. Spróbuj później."
         },
         en: {
-            title: "💙 Guess the baby's name!",
+            title: "💙 Guess the Name!",
             description: "It's a boy! What name do you think we chose?",
-            labelName: "Your name",
-            labelGuess: "Predicted name",
+            labelName: "Your Name",
+            labelGuess: "Predicted Name",
             placeholderName: "e.g. Uncle Mark",
             placeholderGuess: "e.g. Oliver or Leo",
-            button: "Send guess! 🚀",
+            button: "Send Guess! 🚀",
             sending: "Sending...",
             success: "Guess received! Now we wait for the reveal... 🎉",
             alreadyVoted: "Thanks! Your guess is already in our database. 👶",
             error: "Oops! Something went wrong. Try again later."
         },
         fr: {
-            title: "💙 Devinez le prénom du bébé !",
+            title: "💙 Le Prénom ?",
             description: "C'est un garçon ! Quel prénom avons-nous choisi ?",
-            labelName: "Votre nom",
-            labelGuess: "Le prénom deviné",
+            labelName: "Votre Nom",
+            labelGuess: "Le Prénom Choisi",
             placeholderName: "ex. Oncle Marc",
             placeholderGuess: "ex. Arthur ou Gabriel",
             button: "Envoyer ! 🚀",
-            sending: "Envoi en cours...",
+            sending: "Envoi...",
             success: "C'est noté ! On attend maintenant la révélation... 🎉",
             alreadyVoted: "Merci ! Votre réponse est déjà enregistrée. 👶",
             error: "Oups ! Un problème est survenu. Réessayez plus tard."
         }
     };
 
-    let currentLang = 'en';
+    let currentLang = 'pl';
 
     function setLanguage(lang) {
         currentLang = lang;
         const t = translations[lang];
         
-        // Aktualizacja UI
         document.getElementById('ui-title').innerText = t.title;
         document.getElementById('ui-description').innerText = t.description;
         document.getElementById('ui-label-name').innerText = t.labelName;
@@ -150,31 +214,39 @@
         document.getElementById('guess').placeholder = t.placeholderGuess;
         document.getElementById('submitBtn').innerText = t.button;
 
-        // Aktualizacja przycisków języka
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('btn-' + lang).classList.add('active');
     }
 
-    // Automatyczne wykrywanie języka
+    // Inicjalizacja
     window.onload = () => {
+        // Wykrywanie języka przeglądarki
         const userLang = navigator.language.substring(0, 2);
-        if (translations[userLang]) {
-            setLanguage(userLang);
-        } else {
-            setLanguage('en'); // fallback
-        }
+        const startLang = translations[userLang] ? userLang : 'en';
+        setLanguage(startLang);
 
-        if (localStorage.getItem('has_voted_bejbik_boy')) {
+        // Sprawdzenie czy już głosowano
+        if (localStorage.getItem('voted_boy_name')) {
             showSuccess(translations[currentLang].alreadyVoted);
         }
     };
+
+    // Unikalne ID urządzenia
+    let deviceId = localStorage.getItem('bejbik_device_id');
+    if (!deviceId) {
+        deviceId = 'dev-' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('bejbik_device_id', deviceId);
+    }
 
     async function sendVote() {
         const userName = document.getElementById('userName').value;
         const guess = document.getElementById('guess').value;
         const btn = document.getElementById('submitBtn');
 
-        if (!userName || !guess) return alert('...');
+        if (!userName || !guess) {
+            alert(currentLang === 'pl' ? 'Wypełnij pola!' : 'Please fill all fields!');
+            return;
+        }
 
         btn.disabled = true;
         btn.innerText = translations[currentLang].sending;
@@ -183,12 +255,13 @@
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify({ userName, guess, deviceId: localStorage.getItem('device_id_boy') })
+                body: JSON.stringify({ userName, guess, deviceId })
             });
 
-            localStorage.setItem('has_voted_bejbik_boy', 'true');
+            localStorage.setItem('voted_boy_name', 'true');
             showSuccess(translations[currentLang].success);
         } catch (error) {
+            console.error(error);
             alert(translations[currentLang].error);
             btn.disabled = false;
             btn.innerText = translations[currentLang].button;
@@ -200,7 +273,9 @@
         const msg = document.getElementById('message');
         msg.innerText = text;
         msg.style.display = 'block';
-        msg.style.backgroundColor = '#eafaf1';
+        msg.style.backgroundColor = 'var(--success-bg)';
+        msg.style.color = 'var(--success-text)';
+        msg.style.border = '1px solid #d4efdf';
     }
 </script>
 </body>
