@@ -6,23 +6,41 @@
     <title>Zgadnij imię bejbika!</title>
     <style>
         :root {
-            /* Nowa paleta niebieska */
-            --primary: #3498db; /* Główny niebieski */
-            --primary-dark: #2980b9; /* Ciemniejszy niebieski do hoverów */
-            --bg: #e3f2fd; /* Bardzo jasny niebieski tła */
-            --text: #2c3e50; /* Ciemny niebiesko-szary tekst */
-            --border: #bbdefb; /* Jasnoniebieskie obramowanie */
+            --primary: #3498db;
+            --bg: #e3f2fd;
+            --text: #2c3e50;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
+        }
+
+        /* Selektor języka */
+        .lang-switcher {
+            margin-bottom: 1rem;
+        }
+
+        .lang-btn {
+            background: white;
+            border: 1px solid var(--primary);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin: 0 2px;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
         }
 
         .container {
@@ -33,168 +51,157 @@
             width: 90%;
             max-width: 420px;
             text-align: center;
-            border: 1px solid var(--border);
         }
 
-        h1 { color: var(--primary); margin-bottom: 0.5rem; margin-top: 0; }
-        p { margin-bottom: 2rem; font-size: 1rem; opacity: 0.9; }
-
-        .input-group {
-            margin-bottom: 1.2rem;
-            text-align: left;
-        }
-
-        label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.9rem; color: var(--primary-dark); }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            box-sizing: border-box;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
-        }
-
-        input::placeholder {
-            color: #b0bec5;
-        }
-
-        button {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 1rem;
-            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
-        }
-
-        button:hover {
-            background-color: var(--primary-dark);
-        }
-
-        button:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 3px rgba(52, 152, 219, 0.2);
-        }
-
-        button:disabled {
-            background-color: #b0bec5;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        #message { 
-            margin-top: 1.5rem; 
-            font-weight: bold; 
-            display: none; 
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-        }
+        h1 { color: var(--primary); margin-bottom: 0.5rem; }
+        .input-group { margin-bottom: 1.2rem; text-align: left; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        input { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; box-sizing: border-box; }
+        button { width: 100%; padding: 16px; background-color: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 1rem; }
+        #message { margin-top: 1.5rem; font-weight: bold; display: none; padding: 15px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="app">
-    <h1>💙 Zgadnij imię bejbika!</h1>
-    <p>To chłopiec! Jak myślisz, jakie imię wybraliśmy?</p>
-    
-    <div id="form-container">
-        <div class="input-group">
-            <label for="userName">Twoje imię (Kto zgaduje?)</label>
-            <input type="text" id="userName" placeholder="" required>
-        </div>
-
-        <div class="input-group">
-            <label for="guess">Typowane imię chlopca</label>
-            <input type="text" id="guess" placeholder="" required>
-        </div>
-
-        <button id="submitBtn" onclick="sendVote()">Wysyłam typ! 🚀</button>
+    <div class="lang-switcher">
+        <button class="lang-btn" onclick="setLanguage('pl')" id="btn-pl">PL</button>
+        <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
+        <button class="lang-btn" onclick="setLanguage('fr')" id="btn-fr">FR</button>
     </div>
 
-    <div id="message"></div>
-</div>
+    <div class="container">
+        <h1 id="ui-title">💙</h1>
+        <p id="ui-description"></p>
+        
+        <div id="form-container">
+            <div class="input-group">
+                <label id="ui-label-name" for="userName"></label>
+                <input type="text" id="userName" required>
+            </div>
+
+            <div class="input-group">
+                <label id="ui-label-guess" for="guess"></label>
+                <input type="text" id="guess" required>
+            </div>
+
+            <button id="submitBtn" onclick="sendVote()"></button>
+        </div>
+
+        <div id="message"></div>
+    </div>
 
 <script>
-    // Tu wklej swój URL z wdrożenia Google Apps Script
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmKJy9dV6WVRNhBtYWHDHR8iT3KApQXi0X9AVd4azUwdalP7trJ8z6Z9VEi4ICEgk_IA/exec'; 
-    const msgDiv = document.getElementById('message');
-    const formContainer = document.getElementById('form-container');
+    const SCRIPT_URL = 'TWÓJ_URL_Z_GOOGLE_APPS_SCRIPT';
 
-    // 1. Sprawdzanie czy już głosował (LocalStorage)
-    window.onload = () => {
-        if (localStorage.getItem('has_voted_bejbik_boy')) {
-            showSuccess('Dzięki! Twoje typowanie jest już bezpieczne w bazie. 👶');
+    const translations = {
+        pl: {
+            title: "💙 Zgadnij imię bejbika!",
+            description: "To chłopiec! Jak myślisz, jakie imię wybraliśmy?",
+            labelName: "Twoje imię (Kto zgaduje?)",
+            labelGuess: "Typowane imię chłopca",
+            placeholderName: "np. Wujek Marek",
+            placeholderGuess: "np. Staś lub Leon",
+            button: "Wysyłam typ! 🚀",
+            sending: "Wysyłanie...",
+            success: "Głos przyjęty! Teraz czekamy na rozwiązanie... 🎉",
+            alreadyVoted: "Dzięki! Twoje typowanie jest już w bazie. 👶",
+            error: "Ups! Coś poszło nie tak. Spróbuj za chwilę."
+        },
+        en: {
+            title: "💙 Guess the baby's name!",
+            description: "It's a boy! What name do you think we chose?",
+            labelName: "Your name",
+            labelGuess: "Predicted name",
+            placeholderName: "e.g. Uncle Mark",
+            placeholderGuess: "e.g. Oliver or Leo",
+            button: "Send guess! 🚀",
+            sending: "Sending...",
+            success: "Guess received! Now we wait for the reveal... 🎉",
+            alreadyVoted: "Thanks! Your guess is already in our database. 👶",
+            error: "Oops! Something went wrong. Try again later."
+        },
+        fr: {
+            title: "💙 Devinez le prénom du bébé !",
+            description: "C'est un garçon ! Quel prénom avons-nous choisi ?",
+            labelName: "Votre nom",
+            labelGuess: "Le prénom deviné",
+            placeholderName: "ex. Oncle Marc",
+            placeholderGuess: "ex. Arthur ou Gabriel",
+            button: "Envoyer ! 🚀",
+            sending: "Envoi en cours...",
+            success: "C'est noté ! On attend maintenant la révélation... 🎉",
+            alreadyVoted: "Merci ! Votre réponse est déjà enregistrée. 👶",
+            error: "Oups ! Un problème est survenu. Réessayez plus tard."
         }
     };
 
-    // 2. Unikalne ID urządzenia (proste zabezpieczenie)
-    let deviceId = localStorage.getItem('device_id_boy');
-    if (!deviceId) {
-        deviceId = 'dev-b-' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('device_id_boy', deviceId);
+    let currentLang = 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        const t = translations[lang];
+        
+        // Aktualizacja UI
+        document.getElementById('ui-title').innerText = t.title;
+        document.getElementById('ui-description').innerText = t.description;
+        document.getElementById('ui-label-name').innerText = t.labelName;
+        document.getElementById('ui-label-guess').innerText = t.labelGuess;
+        document.getElementById('userName').placeholder = t.placeholderName;
+        document.getElementById('guess').placeholder = t.placeholderGuess;
+        document.getElementById('submitBtn').innerText = t.button;
+
+        // Aktualizacja przycisków języka
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('btn-' + lang).classList.add('active');
     }
+
+    // Automatyczne wykrywanie języka
+    window.onload = () => {
+        const userLang = navigator.language.substring(0, 2);
+        if (translations[userLang]) {
+            setLanguage(userLang);
+        } else {
+            setLanguage('en'); // fallback
+        }
+
+        if (localStorage.getItem('has_voted_bejbik_boy')) {
+            showSuccess(translations[currentLang].alreadyVoted);
+        }
+    };
 
     async function sendVote() {
         const userName = document.getElementById('userName').value;
         const guess = document.getElementById('guess').value;
         const btn = document.getElementById('submitBtn');
 
-        if (!userName || !guess) {
-            alert('Proszę, wypełnij oba pola przed wysłaniem! 😊');
-            return;
-        }
+        if (!userName || !guess) return alert('...');
 
         btn.disabled = true;
-        btn.innerText = 'Wysyłanie...';
+        btn.innerText = translations[currentLang].sending;
 
         try {
-            // Apps Script przy CORS POST działa najlepiej z mode: 'no-cors'
             await fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', 
-                cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userName, guess, deviceId })
+                mode: 'no-cors',
+                body: JSON.stringify({ userName, guess, deviceId: localStorage.getItem('device_id_boy') })
             });
 
-            // Ponieważ no-cors nie zwraca odpowiedzi, zakładamy sukces po wysłaniu
             localStorage.setItem('has_voted_bejbik_boy', 'true');
-            showSuccess('Głos przyjęty! Wyniki w sierpniu 🎉');
-            
+            showSuccess(translations[currentLang].success);
         } catch (error) {
-            console.error('Błąd:', error);
-            alert('Ups! Coś poszło nie tak z serwerami Google. Spróbuj za chwilę.');
+            alert(translations[currentLang].error);
             btn.disabled = false;
-            btn.innerText = 'Wysyłam typ! 🚀';
+            btn.innerText = translations[currentLang].button;
         }
     }
 
     function showSuccess(text) {
-        formContainer.style.display = 'none';
-        msgDiv.innerText = text;
-        msgDiv.style.display = 'block';
-        msgDiv.style.color = '#27ae60'; // Zielony kolor sukcesu
-        msgDiv.style.backgroundColor = '#eafaf1'; // Jasnozielone tło
-        msgDiv.style.border = '1px solid #d4efdf';
+        document.getElementById('form-container').style.display = 'none';
+        const msg = document.getElementById('message');
+        msg.innerText = text;
+        msg.style.display = 'block';
+        msg.style.backgroundColor = '#eafaf1';
     }
 </script>
-
 </body>
 </html>
